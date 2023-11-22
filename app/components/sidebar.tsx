@@ -162,9 +162,21 @@ export function SideBar(props: { className?: string }) {
           AI assistant for PacDocs.
         </div>
         <div className={styles["sidebar-logo"] + " no-dark"}>
-          <PacDocsIcon />
+          <a
+            href="https://crybabyaq.love"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <PacDocsIcon />
+          </a>
           +
-          <ChatGptIcon />
+          <a
+            href="https://openai.com"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <ChatGptIcon />
+          </a>
         </div>
       </div>
 
