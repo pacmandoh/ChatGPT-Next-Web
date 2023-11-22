@@ -3,7 +3,7 @@ module.exports = {
       {
         name: 'chatgpt',
         script: 'node_modules/.bin/next',
-        args: 'start --port 7890 --host localhost',
+        args: 'start --port 7890',
         instances: 'max',
         exec_mode: 'cluster',
         watch: false,
