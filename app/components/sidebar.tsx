@@ -6,6 +6,7 @@ import { IconButton } from "./button";
 import SettingsIcon from "../icons/settings.svg";
 import GithubIcon from "../icons/github.svg";
 import ChatGptIcon from "../icons/chatgpt.svg";
+import PacDocsIcon from "../icons/pacdocs.svg";
 import AddIcon from "../icons/add.svg";
 import CloseIcon from "../icons/close.svg";
 import DeleteIcon from "../icons/delete.svg";
@@ -155,12 +156,14 @@ export function SideBar(props: { className?: string }) {
     >
       <div className={styles["sidebar-header"]} data-tauri-drag-region>
         <div className={styles["sidebar-title"]} data-tauri-drag-region>
-          ChatGPT | PacDocs
+          ChatGPT
         </div>
         <div className={styles["sidebar-sub-title"]}>
           AI assistant for PacDocs.
         </div>
         <div className={styles["sidebar-logo"] + " no-dark"}>
+          <PacDocsIcon />
+          +
           <ChatGptIcon />
         </div>
       </div>
