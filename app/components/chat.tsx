@@ -1098,7 +1098,7 @@ function _Chat() {
           {showMaxIcon && (
             <div className="window-action-button">
               <IconButton
-                icon={config.tightBorder ? <MinIcon /> : <MaxIcon />}
+                icon={config.tightBorder ? <MaxIcon /> : <MinIcon />}
                 bordered
                 onClick={() => {
                   config.update(
