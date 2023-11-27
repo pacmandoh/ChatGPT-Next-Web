@@ -156,7 +156,15 @@ export function SideBar(props: { className?: string }) {
     >
       <div className={styles["sidebar-header"]} data-tauri-drag-region>
         <div className={styles["sidebar-title"]} data-tauri-drag-region>
-          ChatGPT
+          ChatGPT{" "}
+          <a
+            href="https://openai.com"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            {" "}
+            <ChatGptIcon />{" "}
+          </a>
         </div>
         <div className={styles["sidebar-sub-title"]}>
           AI assistant for PacDocs.
@@ -168,14 +176,6 @@ export function SideBar(props: { className?: string }) {
             rel="noopener noreferrer"
           >
             <PacDocsIcon />
-          </a>
-          +
-          <a
-            href="https://openai.com"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <ChatGptIcon />
           </a>
         </div>
       </div>
