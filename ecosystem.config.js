@@ -2,7 +2,7 @@ module.exports = {
   apps: [
     {
       name: 'chatgpt',
-      script: 'node_modules/.bin/next',
+      script: 'pnpm next',
       args: 'start --port 7890',
       instances: 'max',
       exec_mode: 'cluster',
