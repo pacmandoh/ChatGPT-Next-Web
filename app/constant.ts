@@ -18,6 +18,7 @@ export enum Path {
   Settings = "/settings",
   NewChat = "/new-chat",
   Masks = "/masks",
+  Plugins = "/plugins",
   Auth = "/auth",
 }
 
@@ -33,6 +34,7 @@ export enum SlotID {
 
 export enum FileName {
   Masks = "masks.json",
+  Plugins = "plugins.json",
   Prompts = "prompts.json",
 }
 
@@ -41,6 +43,7 @@ export enum StoreKey {
   Access = "access-control",
   Config = "app-config",
   Mask = "mask-store",
+  Plugin = "plugin-store",
   Prompt = "prompt-store",
   Update = "chat-update",
   Sync = "sync",
@@ -54,6 +57,7 @@ export const NARROW_SIDEBAR_WIDTH = 100;
 export const ACCESS_CODE_PREFIX = "nk-";
 
 export const LAST_INPUT_KEY = "last-input";
+export const LAST_INPUT_IMAGE_KEY = "last-input-image";
 export const UNFINISHED_INPUT = (id: string) => "unfinished-input-" + id;
 
 export const STORAGE_KEY = "chatgpt-next-web";
@@ -102,19 +106,11 @@ export const DEFAULT_MODELS = [
     available: true,
   },
   {
-    name: "gpt-4-0314",
-    available: true,
-  },
-  {
     name: "gpt-4-0613",
     available: true,
   },
   {
     name: "gpt-4-32k",
-    available: true,
-  },
-  {
-    name: "gpt-4-32k-0314",
     available: true,
   },
   {
@@ -131,10 +127,6 @@ export const DEFAULT_MODELS = [
   },
   {
     name: "gpt-3.5-turbo",
-    available: true,
-  },
-  {
-    name: "gpt-3.5-turbo-0301",
     available: true,
   },
   {

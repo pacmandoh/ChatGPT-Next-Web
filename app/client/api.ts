@@ -2,6 +2,7 @@ import { getClientConfig } from "../config/client";
 import { ACCESS_CODE_PREFIX, Azure, ServiceProvider } from "../constant";
 import { ChatMessage, ModelType, useAccessStore } from "../store";
 import { ChatGPTApi } from "./platforms/openai";
+import { FileApi } from "./platforms/utils";
 
 export const ROLES = ["system", "user", "assistant"] as const;
 export type MessageRole = (typeof ROLES)[number];
@@ -12,6 +13,7 @@ export type ChatModel = ModelType;
 export interface RequestMessage {
   role: MessageRole;
   content: string;
+  image_url?: string;
 }
 
 export interface LLMConfig {
@@ -23,10 +25,27 @@ export interface LLMConfig {
   frequency_penalty?: number;
 }
 
+export interface LLMAgentConfig {
+  maxIterations: number;
+  returnIntermediateSteps: boolean;
+  useTools?: (string | undefined)[];
+}
+
 export interface ChatOptions {
   messages: RequestMessage[];
   config: LLMConfig;
+  onToolUpdate?: (toolName: string, toolInput: string) => void;
+  onUpdate?: (message: string, chunk: string) => void;
+  onFinish: (message: string) => void;
+  onError?: (err: Error) => void;
+  onController?: (controller: AbortController) => void;
+}
 
+export interface AgentChatOptions {
+  messages: RequestMessage[];
+  config: LLMConfig;
+  agentConfig: LLMAgentConfig;
+  onToolUpdate?: (toolName: string, toolInput: string) => void;
   onUpdate?: (message: string, chunk: string) => void;
   onFinish: (message: string) => void;
   onError?: (err: Error) => void;
@@ -45,6 +64,7 @@ export interface LLMModel {
 
 export abstract class LLMApi {
   abstract chat(options: ChatOptions): Promise<void>;
+  abstract toolAgentChat(options: AgentChatOptions): Promise<void>;
   abstract usage(): Promise<LLMUsage>;
   abstract models(): Promise<LLMModel[]>;
 }
@@ -70,11 +90,19 @@ interface ChatProvider {
   usage: () => void;
 }
 
+export abstract class ToolApi {
+  abstract call(input: string): Promise<string>;
+  abstract name: string;
+  abstract description: string;
+}
+
 export class ClientApi {
   public llm: LLMApi;
+  public file: FileApi;
 
   constructor() {
     this.llm = new ChatGPTApi();
+    this.file = new FileApi();
   }
 
   config() {}
@@ -124,6 +152,32 @@ export class ClientApi {
 }
 
 export const api = new ClientApi();
+
+export function getAuthHeaders() {
+  const accessStore = useAccessStore.getState();
+  const headers: Record<string, string> = {};
+
+  const isAzure = accessStore.provider === ServiceProvider.Azure;
+  const authHeader = isAzure ? "api-key" : "Authorization";
+  const apiKey = isAzure ? accessStore.azureApiKey : accessStore.openaiApiKey;
+
+  const makeBearer = (s: string) => `${isAzure ? "" : "Bearer "}${s.trim()}`;
+  const validString = (x: string) => x && x.length > 0;
+
+  // use user's api key first
+  if (validString(apiKey)) {
+    headers[authHeader] = makeBearer(apiKey);
+  } else if (
+    accessStore.enabledAccessControl() &&
+    validString(accessStore.accessCode)
+  ) {
+    headers[authHeader] = makeBearer(
+      ACCESS_CODE_PREFIX + accessStore.accessCode,
+    );
+  }
+
+  return headers;
+}
 
 export function getHeaders() {
   const accessStore = useAccessStore.getState();
