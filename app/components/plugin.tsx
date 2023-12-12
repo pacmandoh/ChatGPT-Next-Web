@@ -266,7 +266,7 @@ export function PluginPage() {
                       </div>
                     )}
                     {/* 描述 */}
-                    <div className={styles["plugin-info"] + " one-line"}>
+                    <div className={styles["plugin-info"]}>
                       {`${m.description}`}
                     </div>
                   </div>
