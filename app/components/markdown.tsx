@@ -8,6 +8,7 @@ import RehypeHighlight from "rehype-highlight";
 import { useRef, useState, RefObject, useEffect, useMemo } from "react";
 import { copyToClipboard } from "../utils";
 import mermaid from "mermaid";
+import Image from "next/image";
 
 import LoadingIcon from "../icons/three-dots.svg";
 import React from "react";
@@ -124,7 +125,7 @@ function _MarkDownContent(props: { content: string; imageBase64?: string }) {
 
   return (
     <div style={{ fontSize: "inherit" }}>
-      {props.imageBase64 && <img src={props.imageBase64} alt="" />}
+      {props.imageBase64 && <Image src={props.imageBase64} alt="img" />}
       <ReactMarkdown
         remarkPlugins={[RemarkMath, RemarkGfm, RemarkBreaks]}
         rehypePlugins={[
