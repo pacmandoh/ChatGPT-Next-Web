@@ -224,8 +224,8 @@ docker run -d -p 3000:3000 \
 
 ## 贡献者
 
-<a href="https://github.com/Hk-Gosuto/ChatGPT-Next-Web-LangChain/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=Hk-Gosuto/ChatGPT-Next-Web-LangChain" />
+<a href="https://github.com/pacmandoh/ChatGPT-Next-Web/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=pacmandoh/ChatGPT-Next-Web" />
 </a>
 
 ## 截图

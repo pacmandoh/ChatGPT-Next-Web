@@ -202,6 +202,10 @@ bash <(curl -s https://raw.githubusercontent.com/Yidadaa/ChatGPT-Next-Web/main/s
 
 ### 贡献者
 
+<a href="https://github.com/pacmandoh/ChatGPT-Next-Web/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=pacmandoh/ChatGPT-Next-Web" />
+</a>
+
 [见项目贡献者列表](https://github.com/Yidadaa/ChatGPT-Next-Web/graphs/contributors)
 
 ### 相关项目
