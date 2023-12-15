@@ -63,6 +63,7 @@ export class BaiduSearch extends Tool {
   /** @ignore */
   async _call(input: string) {
     const searchResults = await search(input, this.maxResults);
+    console.log(searchResults);
 
     if (searchResults.results.length === 0) {
       return "No good search result found";
