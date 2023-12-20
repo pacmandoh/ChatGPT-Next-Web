@@ -230,6 +230,7 @@ export function PluginPage() {
             onClick={() => navigate(Path.Home)}
           ></IconButton>
         </div> */}
+
         <div className="window-header">
           <div className="window-header-title">
             <div className="window-header-main-title">
@@ -274,6 +275,7 @@ export function PluginPage() {
                       </div>
                     )}
                     {/* 描述 */}
+                    {/* Fix: descriptions do not wrap */}
                     <div className={styles["plugin-info"]}>
                       {`${m.description}`}
                     </div>
