@@ -1,25 +1,32 @@
 <div align="center">
 <img src="./docs/images/icon.svg" alt="icon"/>
 
+<h1 align="center">NextChat (ChatGPT Next Web)</h1>
+
+English / [简体中文](./README_CN.md)
+
+One-Click to get a well-designed cross-platform ChatGPT web UI, with GPT3, GPT4 & Gemini Pro support.
 <h1 align="center">ChatGPT Next Web LangChain</h1>
 
-一键免费部署你的跨平台私人 ChatGPT 应用（基于 LangChain 实现插件功能）。
+一键免费部署你的跨平台私人 ChatGPT 应用（基于 LangChain 实现插件功能）, 支持 GPT3, GPT4 & Gemini Pro 模型。
 
 [![Web][Web-image]][web-url]
 [![Windows][Windows-image]][download-url]
 [![MacOS][MacOS-image]][download-url]
 [![Linux][Linux-image]][download-url]
 
-[网页版](https://chat-gpt-next-web-gosuto.vercel.app/) / ~~[客户端](https://github.com/Hk-Gosuto/ChatGPT-Next-Web-LangChain/releases)~~ / [反馈](https://github.com/Hk-Gosuto/ChatGPT-Next-Web-LangChain/issues)
+[Web App](https://chat-gpt-next-web.vercel.app/) / [Desktop App](https://github.com/Yidadaa/ChatGPT-Next-Web/releases) / [Discord](https://discord.gg/YCkeafCafC) / [Twitter](https://twitter.com/mortiest_ricky) / [Buy Me a Coffee](https://www.buymeacoffee.com/yidadaa)
 
-[web-url]: https://chat-gpt-next-web-gosuto.vercel.app/
-[download-url]: https://github.com/Hk-Gosuto/ChatGPT-Next-Web-LangChain/releases
+[网页版](https://chatgpt.nextweb.fun/) / [客户端](https://github.com/Yidadaa/ChatGPT-Next-Web/releases) / [反馈](https://github.com/Yidadaa/ChatGPT-Next-Web/issues) / [QQ 群](https://github.com/Yidadaa/ChatGPT-Next-Web/discussions/1724) / [打赏开发者](https://user-images.githubusercontent.com/16968934/227772541-5bcd52d8-61b7-488c-a203-0330d8006e2b.jpg)
+
+[web-url]: https://chatgpt.nextweb.fun
+[download-url]: https://github.com/Yidadaa/ChatGPT-Next-Web/releases
 [Web-image]: https://img.shields.io/badge/Web-PWA-orange?logo=microsoftedge
 [Windows-image]: https://img.shields.io/badge/-Windows-blue?logo=windows
 [MacOS-image]: https://img.shields.io/badge/-MacOS-black?logo=apple
 [Linux-image]: https://img.shields.io/badge/-Linux-333?logo=ubuntu
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2FYidadaa%2FChatGPT-Next-Web&env=OPENAI_API_KEY&env=CODE&project-name=chatgpt-next-web&repository-name=ChatGPT-Next-Web)
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2FYidadaa%2FChatGPT-Next-Web&env=OPENAI_API_KEY&env=CODE&env=GOOGLE_API_KEY&project-name=chatgpt-next-web&repository-name=ChatGPT-Next-Web)
 
 [![Deploy on Zeabur](https://zeabur.com/button.svg)](https://zeabur.com/templates/ZBUEFA)
 
@@ -198,25 +205,25 @@ OpanAI 密钥，你在 openai 账户页面申请的 api key。
 
 OpenAI 接口代理 URL，如果你手动配置了 openai 接口代理，请填写此选项。
 
-> 如果遇到 ssl 证书问题，请将 `BASE_URL` 的协议设置为 http。
+### `OPENAI_ORG_ID` (optional)
 
-### `OPENAI_ORG_ID` （可选）
+Specify OpenAI organization ID.
 
-指定 OpenAI 中的组织 ID。
+### `AZURE_URL` (optional)
 
-### `HIDE_USER_API_KEY` （可选）
+> Example: https://{azure-resource-url}/openai/deployments/{deploy-name}
 
-如果你不想让用户自行填入 API Key，将此环境变量设置为 1 即可。
+Azure deploy url.
 
-### `DISABLE_GPT4` （可选）
+### `AZURE_API_KEY` (optional)
 
-如果你不想让用户使用 GPT-4，将此环境变量设置为 1 即可。
+Azure Api Key.
 
-### `HIDE_BALANCE_QUERY` （可选）
+### `GOOGLE_URL` (optional)
 
-如果你不想让用户查询余额，将此环境变量设置为 1 即可。
+Google Gemini Pro Api Url.
 
-## 部署
+### `HIDE_USER_API_KEY` (optional)
 
 ### 容器部署 （推荐）
 

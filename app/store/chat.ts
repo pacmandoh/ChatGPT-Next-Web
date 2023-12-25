@@ -8,10 +8,11 @@ import {
   DEFAULT_INPUT_TEMPLATE,
   DEFAULT_SYSTEM_TEMPLATE,
   KnowledgeCutOffDate,
+  ModelProvider,
   StoreKey,
   SUMMARIZE_MODEL,
 } from "../constant";
-import { api, RequestMessage } from "../client/api";
+import { ClientApi, RequestMessage } from "../client/api";
 import { ChatControllerPool } from "../client/controller";
 import { prettyObject } from "../utils/format";
 import { estimateTokenLength } from "../utils/token";
@@ -470,7 +471,9 @@ export const useChatStore = createPersistStore(
 
         // system prompts, to get close to OpenAI Web ChatGPT
         const shouldInjectSystemPrompts = modelConfig.enableInjectSystemPrompts;
-        const systemPrompts = shouldInjectSystemPrompts
+
+        var systemPrompts: ChatMessage[] = [];
+        systemPrompts = shouldInjectSystemPrompts
           ? [
               createMessage({
                 role: "system",
@@ -564,6 +567,14 @@ export const useChatStore = createPersistStore(
       summarizeSession() {
         const config = useAppConfig.getState();
         const session = get().currentSession();
+        const modelConfig = session.mask.modelConfig;
+
+        var api: ClientApi;
+        if (modelConfig.model === "gemini-pro") {
+          api = new ClientApi(ModelProvider.GeminiPro);
+        } else {
+          api = new ClientApi(ModelProvider.GPT);
+        }
 
         // remove error messages if any
         const messages = session.messages;
@@ -595,8 +606,6 @@ export const useChatStore = createPersistStore(
             },
           });
         }
-
-        const modelConfig = session.mask.modelConfig;
         const summarizeIndex = Math.max(
           session.lastSummarizeIndex,
           session.clearContextIndex ?? 0,
