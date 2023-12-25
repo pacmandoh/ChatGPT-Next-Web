@@ -3,7 +3,7 @@
 
 <h1 align="center">ChatGPT Next Web LangChain</h1>
 
-一键免费部署你的跨平台私人 ChatGPT 应用（基于 LangChain 实现插件功能）。
+一键免费部署你的跨平台私人 ChatGPT 应用, 支持 GPT3, GPT4 & Gemini Pro 模型。（基于 LangChain 实现插件功能）
 
 [![Web][Web-image]][web-url]
 [![Windows][Windows-image]][download-url]
@@ -20,8 +20,6 @@
 [Linux-image]: https://img.shields.io/badge/-Linux-333?logo=ubuntu
 
 [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2FYidadaa%2FChatGPT-Next-Web&env=OPENAI_API_KEY&env=CODE&project-name=chatgpt-next-web&repository-name=ChatGPT-Next-Web)
-
-[![Deploy on Zeabur](https://zeabur.com/button.svg)](https://zeabur.com/templates/ZBUEFA)
 
 [![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/Hk-Gosuto/ChatGPT-Next-Web-LangChain)
 
@@ -93,15 +91,12 @@
       - 使用本插件需要一定的专业知识，Stable Diffusion 本身的相关问题不在本项目的解答范围内，如果您确定要使用本插件请参考 [Stable Diffusion 插件配置指南](./docs/stable-diffusion-plugin-cn.md) 文档进行配置
       - StableDiffusion 插件需要配置对象存储服务，请参考 [对象存储服务配置指南](./docs/s3-oss.md) 配置
     - Arxiv
-- ⚠ 实验性支持 Gemini-Pro 模型
+- 支持 Gemini-Pro 模型（同步上游仓库并修改接口为流式传输）
   - 以下功能目前还不支持
-    -  `temperature` 等参数配置
-    - **面具**和**系统提示词**功能（google 的相关接口不支持，后续支持会跟进）
     - **插件功能**
   - 如何启用
-    - 配置 `CUSTOM_MODELS` 添加 `gemini-pro` 模型，如：`CUSTOM_MODELS=gemini-pro`
     - 配置密钥 `GOOGLE_API_KEY` ，key 可以在这里获取：https://ai.google.dev/tutorials/setup
-    - 配置自定义接口地址（可选） `GOOGLE_BASE_URL`，可以使用我的这个项目来使用 vercel 搭建一个中专服务：[google-gemini-vercel-proxy](https://github.com/Hk-Gosuto/google-gemini-vercel-proxy)
+    - 配置自定义接口地址（可选） `GOOGLE_BASE_URL`，可以使用我的这个项目搭建一个基于 vercel 的代理服务：[google-gemini-vercel-proxy](https://github.com/Hk-Gosuto/google-gemini-vercel-proxy)
   - 常见问题参考：[Gemini Prompting FAQs](https://js.langchain.com/docs/integrations/chat/google_generativeai#gemini-prompting-faqs)
 
 ## 开发计划
@@ -226,6 +221,14 @@ OpenAI 接口代理 URL，如果你手动配置了 openai 接口代理，请填�
 ### `HIDE_BALANCE_QUERY` （可选）
 
 如果你不想让用户查询余额，将此环境变量设置为 1 即可。
+
+### `GOOGLE_API_KEY` （可选）
+
+Google Gemini Pro Api Key.
+
+### `GOOGLE_BASE_URL` （可选）
+
+Google Gemini Pro Api Url.
 
 ## 部署
 
