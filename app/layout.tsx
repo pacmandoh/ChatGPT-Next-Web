@@ -6,19 +6,19 @@ import { getClientConfig } from "./config/client";
 import { type Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "ChatGPT | PacDocs",
-  description: "PacDocs's ChatGPT Chat Bot.",
+  title: "PacGPT: AI for PacDocs",
+  description: "PacDocs's AI Chat Bot.",
   viewport: {
     width: "device-width",
     initialScale: 1,
     maximumScale: 1,
   },
   themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#fafafa" },
-    { media: "(prefers-color-scheme: dark)", color: "#151515" },
+    { media: "(prefers-color-scheme: light)", color: "#e7f8ff" },
+    { media: "(prefers-color-scheme: dark)", color: "#1b262a" },
   ],
   appleWebApp: {
-    title: "ChatGPT | PacDocs",
+    title: "PacGPT: AI for PacDocs",
     statusBarStyle: "default",
   },
 };

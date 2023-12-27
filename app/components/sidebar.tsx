@@ -7,6 +7,7 @@ import SettingsIcon from "../icons/settings.svg";
 import GithubIcon from "../icons/github.svg";
 import ChatGptIcon from "../icons/chatgpt.svg";
 import PacDocsIcon from "../icons/pacdocs.svg";
+import GoogleBardIcon from "../icons/googlebard.svg";
 import AddIcon from "../icons/add.svg";
 import CloseIcon from "../icons/close.svg";
 import DeleteIcon from "../icons/delete.svg";
@@ -156,14 +157,22 @@ export function SideBar(props: { className?: string }) {
     >
       <div className={styles["sidebar-header"]} data-tauri-drag-region>
         <div className={styles["sidebar-title"]} data-tauri-drag-region>
-          ChatGPT{" "}
+          PacGPT{" "}
           <a
-            href="https://openai.com"
+            href="https://openai.com/"
             target="_blank"
             rel="noopener noreferrer"
           >
             {" "}
             <ChatGptIcon />{" "}
+          </a>
+          <a
+            href="https://bard.google.com/"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            {" "}
+            <GoogleBardIcon />{" "}
           </a>
         </div>
         <div className={styles["sidebar-sub-title"]}>
@@ -171,7 +180,7 @@ export function SideBar(props: { className?: string }) {
         </div>
         <div className={styles["sidebar-logo"] + " no-dark"}>
           <a
-            href="https://crybabyaq.love"
+            href="https://crybabyaq.love/"
             target="_blank"
             rel="noopener noreferrer"
           >
