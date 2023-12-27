@@ -165,8 +165,7 @@ export function SideBar(props: { className?: string }) {
           >
             {" "}
             <ChatGptIcon />
-          </a>
-          {" & "}
+          </a>{" "}
           <a
             href="https://bard.google.com/"
             target="_blank"
