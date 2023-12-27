@@ -164,15 +164,16 @@ export function SideBar(props: { className?: string }) {
             rel="noopener noreferrer"
           >
             {" "}
-            <ChatGptIcon />{" "}
+            <ChatGptIcon />
           </a>
+          {" & "}
           <a
             href="https://bard.google.com/"
             target="_blank"
             rel="noopener noreferrer"
           >
             {" "}
-            <GoogleBardIcon />{" "}
+            <GoogleBardIcon />
           </a>
         </div>
         <div className={styles["sidebar-sub-title"]}>
