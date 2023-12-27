@@ -6,7 +6,7 @@ import { getClientConfig } from "./config/client";
 import { type Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "PacGPTs: AI for PacDocs",
+  title: "PacGPTs - ChatAI for PacDocs",
   description: "PacDocs's AI Chat Bot.",
   viewport: {
     width: "device-width",
@@ -18,7 +18,7 @@ export const metadata: Metadata = {
     { media: "(prefers-color-scheme: dark)", color: "#1b262a" },
   ],
   appleWebApp: {
-    title: "PacGPTs: AI for PacDocs",
+    title: "PacGPTs - AI for PacDocs",
     statusBarStyle: "default",
   },
 };
