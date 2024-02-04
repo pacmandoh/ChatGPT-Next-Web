@@ -128,6 +128,7 @@ const en: LocaleType = {
     DeleteChat: "Confirm to delete the selected conversation?",
     DeleteToast: "Chat Deleted",
     Revert: "Revert",
+    Search: "Search Chat",
   },
   Settings: {
     Title: "Settings",
@@ -412,7 +413,7 @@ const en: LocaleType = {
     Page: {
       Title: "Plugin Template",
       SubTitle: (count: number) => `${count} plugin templates`,
-      Search: "Search Templates",
+      Search: "Search Plugins",
       Create: "Create",
     },
     Item: {
