@@ -6,7 +6,9 @@ import { ModelConfig, ModelType, useAppConfig } from "./config";
 import { createEmptyMask, Mask } from "./mask";
 import {
   DEFAULT_INPUT_TEMPLATE,
+  DEFAULT_MODELS,
   DEFAULT_SYSTEM_TEMPLATE,
+  GOOGLE_SUMMARIZE_MODEL,
   KnowledgeCutOffDate,
   ModelProvider,
   StoreKey,
@@ -90,6 +92,12 @@ function createEmptySession(): ChatSession {
 }
 
 function getSummarizeModel(currentModel: string) {
+  // if the current model does not exist in the default model
+  // example azure services cannot use SUMMARIZE_MODEL
+  const model = DEFAULT_MODELS.find((m) => m.name === currentModel);
+  console.log("model", model);
+  if (!model) return currentModel;
+  if (model.provider.providerType === "google") return GOOGLE_SUMMARIZE_MODEL;
   // if it is using gpt-* models, force to use 3.5 to summarize
   return currentModel.startsWith("gpt") ? SUMMARIZE_MODEL : currentModel;
 }
@@ -99,10 +107,21 @@ function countMessages(msgs: ChatMessage[]) {
 }
 
 function fillTemplateWith(input: string, modelConfig: ModelConfig) {
-  let cutoff =
+  const cutoff =
     KnowledgeCutOffDate[modelConfig.model] ?? KnowledgeCutOffDate.default;
+  // Find the model in the DEFAULT_MODELS array that matches the modelConfig.model
+  const modelInfo = DEFAULT_MODELS.find((m) => m.name === modelConfig.model);
+
+  var serviceProvider = "OpenAI";
+  if (modelInfo) {
+    // TODO: auto detect the providerName from the modelConfig.model
+
+    // Directly use the providerName from the modelInfo
+    serviceProvider = modelInfo.provider.providerName;
+  }
 
   const vars = {
+    ServiceProvider: serviceProvider,
     cutoff,
     model: modelConfig.model,
     time: new Date().toLocaleString(),
@@ -119,7 +138,8 @@ function fillTemplateWith(input: string, modelConfig: ModelConfig) {
   }
 
   Object.entries(vars).forEach(([name, value]) => {
-    output = output.replaceAll(`{{${name}}}`, value);
+    const regex = new RegExp(`{{${name}}}`, "g");
+    output = output.replace(regex, value.toString()); // Ensure value is a string
   });
 
   return output;
@@ -395,7 +415,7 @@ export const useChatStore = createPersistStore(
             },
           });
         } else {
-          if (modelConfig.model === "gemini-pro") {
+          if (modelConfig.model.startsWith("gemini")) {
             api = new ClientApi(ModelProvider.GeminiPro);
           }
           // make request
@@ -578,7 +598,7 @@ export const useChatStore = createPersistStore(
         const modelConfig = session.mask.modelConfig;
 
         var api: ClientApi;
-        if (modelConfig.model === "gemini-pro") {
+        if (modelConfig.model.startsWith("gemini")) {
           api = new ClientApi(ModelProvider.GeminiPro);
         } else {
           api = new ClientApi(ModelProvider.GPT);
@@ -590,6 +610,7 @@ export const useChatStore = createPersistStore(
         // should summarize topic after chating more than 50 words
         const SUMMARIZE_MIN_LEN = 50;
         if (
+          !process.env.NEXT_PUBLIC_DISABLE_AUTOGENERATETITLE &&
           config.enableAutoGenerateTitle &&
           session.topic === DEFAULT_TOPIC &&
           countMessages(messages) >= SUMMARIZE_MIN_LEN
@@ -644,6 +665,7 @@ export const useChatStore = createPersistStore(
         );
 
         if (
+          !process.env.NEXT_PUBLIC_DISABLE_SENDMEMORY &&
           historyMsgLength > modelConfig.compressMessageLengthThreshold &&
           modelConfig.sendMemory
         ) {

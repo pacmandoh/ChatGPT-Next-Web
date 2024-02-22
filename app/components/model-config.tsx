@@ -92,7 +92,7 @@ export function ModelConfigList(props: {
         ></input>
       </ListItem>
 
-      {props.modelConfig.model === "gemini-pro" ? null : (
+      {props.modelConfig.model.startsWith("gemini") ? null : (
         <>
           <ListItem
             title={Locale.Settings.PresencePenalty.Title}
@@ -208,7 +208,11 @@ export function ModelConfigList(props: {
       <ListItem title={Locale.Memory.Title} subTitle={Locale.Memory.Send}>
         <input
           type="checkbox"
-          checked={props.modelConfig.sendMemory}
+          disabled={!!process.env.NEXT_PUBLIC_DISABLE_SENDMEMORY}
+          checked={
+            !process.env.NEXT_PUBLIC_DISABLE_SENDMEMORY &&
+            props.modelConfig.sendMemory
+          }
           onChange={(e) =>
             props.updateConfig(
               (config) => (config.sendMemory = e.currentTarget.checked),

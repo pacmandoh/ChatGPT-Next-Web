@@ -307,7 +307,7 @@ export function PreviewActions(props: {
     setShouldExport(false);
 
     var api: ClientApi;
-    if (config.modelConfig.model === "gemini-pro") {
+    if (config.modelConfig.model.startsWith("gemini")) {
       api = new ClientApi(ModelProvider.GeminiPro);
     } else {
       api = new ClientApi(ModelProvider.GPT);
@@ -465,7 +465,9 @@ export function ImagePreviewer(props: {
     const isApp = getClientConfig()?.isApp;
 
     try {
-      const blob = await toPng(dom);
+      const blob = await toPng(dom, {
+        includeQueryParams: true,
+      });
       if (!blob) return;
 
       if (isMobile || (isApp && window.__TAURI__)) {
@@ -513,6 +515,18 @@ export function ImagePreviewer(props: {
     if (dom) {
       dom.innerHTML = dom.innerHTML; // Refresh the content of the preview by resetting its HTML for fix a bug glitching
     }
+  };
+
+  const markdownImageUrlCorsProcess = (markdownContent: string) => {
+    const updatedContent = markdownContent.replace(
+      /!\[.*?\]\((.*?)\)/g,
+      (match, url) => {
+        if (!url.startsWith("http")) return `![image](${url})`;
+        const updatedURL = `/api/cors?url=${encodeURIComponent(url)}`;
+        return `![image](${updatedURL})`;
+      },
+    );
+    return updatedContent;
   };
 
   return (
@@ -580,7 +594,7 @@ export function ImagePreviewer(props: {
 
               <div className={styles["body"]}>
                 <Markdown
-                  content={m.content}
+                  content={markdownImageUrlCorsProcess(m.content)}
                   imageBase64={m.image_url}
                   fontSize={config.fontSize}
                   defaultShow

@@ -171,7 +171,7 @@ export function getHeaders(ignoreHeaders?: boolean) {
   const accessStore = useAccessStore.getState();
   let headers: Record<string, string> = {};
   const modelConfig = useChatStore.getState().currentSession().mask.modelConfig;
-  const isGoogle = modelConfig.model === "gemini-pro";
+  const isGoogle = modelConfig.model.startsWith("gemini");
   if (!ignoreHeaders && !isGoogle) {
     headers = {
       "Content-Type": "application/json",
@@ -180,7 +180,7 @@ export function getHeaders(ignoreHeaders?: boolean) {
     };
   }
   const isAzure = accessStore.provider === ServiceProvider.Azure;
-  let authHeader = isAzure ? "api-key" : "Authorization";
+  let authHeader = "Authorization";
   const apiKey = isGoogle
     ? accessStore.googleApiKey
     : isAzure
@@ -195,6 +195,7 @@ export function getHeaders(ignoreHeaders?: boolean) {
   if (validString(apiKey)) {
     authHeader = isGoogle ? "x-goog-api-key" : authHeader;
     headers[authHeader] = makeBearer(apiKey);
+    if (isAzure) headers["api-key"] = makeBearer(apiKey);
   } else if (
     accessStore.enabledAccessControl() &&
     validString(accessStore.accessCode)
