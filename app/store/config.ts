@@ -78,6 +78,10 @@ export const DEFAULT_CONFIG = {
     voice: DEFAULT_TTS_VOICE,
     speed: 1.0,
   },
+
+  sttConfig: {
+    enable: false,
+  },
 };
 
 export type ChatConfig = typeof DEFAULT_CONFIG;
@@ -85,6 +89,7 @@ export type ChatConfig = typeof DEFAULT_CONFIG;
 export type ModelConfig = ChatConfig["modelConfig"];
 export type PluginConfig = ChatConfig["pluginConfig"];
 export type TTSConfig = ChatConfig["ttsConfig"];
+export type STTConfig = ChatConfig["sttConfig"];
 
 export function limitNumber(
   x: number,
@@ -125,7 +130,7 @@ export const ModalConfigValidator = {
     return limitNumber(x, -2, 2, 0);
   },
   temperature(x: number) {
-    return limitNumber(x, 0, 1, 1);
+    return limitNumber(x, 0, 2, 1);
   },
   top_p(x: number) {
     return limitNumber(x, 0, 1, 1);
