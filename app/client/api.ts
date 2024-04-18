@@ -7,8 +7,9 @@ import {
 } from "../constant";
 import { ChatMessage, ModelType, useAccessStore, useChatStore } from "../store";
 import { ChatGPTApi } from "./platforms/openai";
-import { FileApi } from "./platforms/utils";
+import { FileApi, FileInfo } from "./platforms/utils";
 import { GeminiProApi } from "./platforms/google";
+import { ClaudeApi } from "./platforms/anthropic";
 export const ROLES = ["system", "user", "assistant"] as const;
 export type MessageRole = (typeof ROLES)[number];
 
@@ -27,6 +28,7 @@ export interface MultimodalContent {
 export interface RequestMessage {
   role: MessageRole;
   content: string | MultimodalContent[];
+  fileInfos?: FileInfo[];
 }
 
 export interface LLMConfig {
@@ -74,12 +76,20 @@ export interface ChatOptions {
 }
 
 export interface AgentChatOptions {
+  chatSessionId?: string;
   messages: RequestMessage[];
   config: LLMConfig;
   agentConfig: LLMAgentConfig;
   onToolUpdate?: (toolName: string, toolInput: string) => void;
   onUpdate?: (message: string, chunk: string) => void;
   onFinish: (message: string) => void;
+  onError?: (err: Error) => void;
+  onController?: (controller: AbortController) => void;
+}
+
+export interface CreateRAGStoreOptions {
+  chatSessionId: string;
+  fileInfos: FileInfo[];
   onError?: (err: Error) => void;
   onController?: (controller: AbortController) => void;
 }
@@ -106,6 +116,7 @@ export abstract class LLMApi {
   abstract speech(options: SpeechOptions): Promise<ArrayBuffer>;
   abstract transcription(options: TranscriptionOptions): Promise<string>;
   abstract toolAgentChat(options: AgentChatOptions): Promise<void>;
+  abstract createRAGStore(options: CreateRAGStoreOptions): Promise<void>;
   abstract usage(): Promise<LLMUsage>;
   abstract models(): Promise<LLMModel[]>;
 }
@@ -142,10 +153,15 @@ export class ClientApi {
   public file: FileApi;
 
   constructor(provider: ModelProvider = ModelProvider.GPT) {
-    if (provider === ModelProvider.GeminiPro) {
-      this.llm = new GeminiProApi();
-    } else {
-      this.llm = new ChatGPTApi();
+    switch (provider) {
+      case ModelProvider.GeminiPro:
+        this.llm = new GeminiProApi();
+        break;
+      case ModelProvider.Claude:
+        this.llm = new ClaudeApi();
+        break;
+      default:
+        this.llm = new ChatGPTApi();
     }
     this.file = new FileApi();
   }
@@ -213,8 +229,8 @@ export function getHeaders(ignoreHeaders?: boolean) {
   const apiKey = isGoogle
     ? accessStore.googleApiKey
     : isAzure
-    ? accessStore.azureApiKey
-    : accessStore.openaiApiKey;
+      ? accessStore.azureApiKey
+      : accessStore.openaiApiKey;
 
   const makeBearer = (s: string) =>
     `${isGoogle || isAzure ? "" : "Bearer "}${s.trim()}`;

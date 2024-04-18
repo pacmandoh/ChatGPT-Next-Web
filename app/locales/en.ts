@@ -70,6 +70,7 @@ const en: LocaleType = {
       EnablePlugins: "Enable Plugins",
       DisablePlugins: "Disable Plugins",
       UploadImage: "Upload Images",
+      UploadFle: "Upload Files",
     },
     Rename: "Rename Chat",
     Typing: "Typing…",
@@ -321,6 +322,24 @@ const en: LocaleType = {
         ApiVerion: {
           Title: "Azure Api Version",
           SubTitle: "Check your api version from azure console",
+        },
+      },
+      Anthropic: {
+        ApiKey: {
+          Title: "Anthropic API Key",
+          SubTitle:
+            "Use a custom Anthropic Key to bypass password access restrictions",
+          Placeholder: "Anthropic API Key",
+        },
+
+        Endpoint: {
+          Title: "Endpoint Address",
+          SubTitle: "Example:",
+        },
+
+        ApiVerion: {
+          Title: "API Version (claude api version)",
+          SubTitle: "Select and input a specific API version",
         },
       },
       CustomModel: {

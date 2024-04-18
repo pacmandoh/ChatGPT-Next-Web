@@ -36,6 +36,11 @@ const DEFAULT_ACCESS_STATE = {
   googleApiKey: "",
   googleApiVersion: "v1",
 
+  // anthropic
+  anthropicApiKey: "",
+  anthropicApiVersion: "2023-06-01",
+  anthropicUrl: "",
+
   // server config
   needCode: true,
   hideUserApiKey: false,
@@ -43,6 +48,7 @@ const DEFAULT_ACCESS_STATE = {
   disableGPT4: false,
   disableFastLink: false,
   customModels: "",
+  isEnableRAG: false,
 };
 
 export const useAccessStore = createPersistStore(
@@ -53,6 +59,12 @@ export const useAccessStore = createPersistStore(
       this.fetch();
 
       return get().needCode;
+    },
+
+    enableRAG() {
+      this.fetch();
+
+      return get().isEnableRAG;
     },
 
     isValidOpenAI() {
@@ -67,6 +79,10 @@ export const useAccessStore = createPersistStore(
       return ensure(get(), ["googleApiKey"]);
     },
 
+    isValidAnthropic() {
+      return ensure(get(), ["anthropicApiKey"]);
+    },
+
     isAuthorized() {
       this.fetch();
 
@@ -75,6 +91,7 @@ export const useAccessStore = createPersistStore(
         this.isValidOpenAI() ||
         this.isValidAzure() ||
         this.isValidGoogle() ||
+        this.isValidAnthropic() ||
         !this.enabledAccessControl() ||
         (this.enabledAccessControl() && ensure(get(), ["accessCode"]))
       );
