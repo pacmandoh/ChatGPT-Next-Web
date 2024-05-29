@@ -8,6 +8,7 @@ import { getHeaders } from "../client/api";
 import { getClientConfig } from "../config/client";
 import { createPersistStore } from "../utils/store";
 import { ensure } from "../utils/clone";
+import { DEFAULT_CONFIG } from "./config";
 
 let fetchState = 0; // 0 not fetch, 1 fetching, 2 done
 
@@ -49,6 +50,10 @@ const DEFAULT_ACCESS_STATE = {
   disableFastLink: false,
   customModels: "",
   isEnableRAG: false,
+  defaultModel: "",
+
+  // tts config
+  edgeTTSVoiceName: "zh-CN-YunxiNeural",
 };
 
 export const useAccessStore = createPersistStore(
@@ -59,6 +64,12 @@ export const useAccessStore = createPersistStore(
       this.fetch();
 
       return get().needCode;
+    },
+
+    edgeVoiceName() {
+      this.fetch();
+
+      return get().edgeTTSVoiceName;
     },
 
     enableRAG() {
@@ -107,6 +118,13 @@ export const useAccessStore = createPersistStore(
         },
       })
         .then((res) => res.json())
+        .then((res) => {
+          // Set default model from env request
+          let defaultModel = res.defaultModel ?? "";
+          DEFAULT_CONFIG.modelConfig.model =
+            defaultModel !== "" ? defaultModel : "gpt-3.5-turbo";
+          return res;
+        })
         .then((res: DangerConfig) => {
           console.log("[Config] got config from server", res);
           set(() => ({ ...res }));
