@@ -328,5 +328,6 @@
 
   &-search-input:focus {
     background-color: var(--gray-50);
+    border: 1px solid var(--primary);
   }
 }
