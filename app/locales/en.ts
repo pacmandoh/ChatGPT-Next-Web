@@ -113,6 +113,10 @@ const en: LocaleType = {
       Toast: "Capturing Image...",
       Modal: "Long press or right click to save image",
     },
+    Artifacts: {
+      Title: "Share Artifacts",
+      Error: "Share Error",
+    },
   },
   Select: {
     Search: "Search",
@@ -139,6 +143,7 @@ const en: LocaleType = {
   Settings: {
     Title: "Settings",
     SubTitle: "All Settings",
+    ShowPassword: "ShowPassword",
     Danger: {
       Reset: {
         Title: "Reset All Settings",
@@ -162,6 +167,12 @@ const en: LocaleType = {
       Title: "Font Size",
       SubTitle: "Adjust font size of chat content",
     },
+    FontFamily: {
+      Title: "Chat Font Family",
+      SubTitle:
+        "Font Family of the chat content, leave empty to apply global default font",
+      Placeholder: "Font Family Name",
+    },
     InjectSystemPrompts: {
       Title: "Inject System Prompts",
       SubTitle: "Inject a global system prompt for every request",
@@ -178,6 +189,8 @@ const en: LocaleType = {
       IsChecking: "Checking update...",
       FoundUpdate: (x: string) => `Found new version: ${x}`,
       GoToUpdate: "Update",
+      Success: "Update Successful.",
+      Failed: "Update Failed.",
     },
     SendKey: "Send Key",
     Theme: "Theme",
@@ -334,12 +347,126 @@ const en: LocaleType = {
 
         Endpoint: {
           Title: "Endpoint Address",
-          SubTitle: "Example:",
+          SubTitle: "Example: ",
         },
 
         ApiVerion: {
           Title: "API Version (claude api version)",
           SubTitle: "Select and input a specific API version",
+        },
+      },
+      Baidu: {
+        ApiKey: {
+          Title: "Baidu API Key",
+          SubTitle: "Use a custom Baidu API Key",
+          Placeholder: "Baidu API Key",
+        },
+        SecretKey: {
+          Title: "Baidu Secret Key",
+          SubTitle: "Use a custom Baidu Secret Key",
+          Placeholder: "Baidu Secret Key",
+        },
+        Endpoint: {
+          Title: "Endpoint Address",
+          SubTitle: "not supported, configure in .env",
+        },
+      },
+      Tencent: {
+        ApiKey: {
+          Title: "Tencent API Key",
+          SubTitle: "Use a custom Tencent API Key",
+          Placeholder: "Tencent API Key",
+        },
+        SecretKey: {
+          Title: "Tencent Secret Key",
+          SubTitle: "Use a custom Tencent Secret Key",
+          Placeholder: "Tencent Secret Key",
+        },
+        Endpoint: {
+          Title: "Endpoint Address",
+          SubTitle: "not supported, configure in .env",
+        },
+      },
+      ByteDance: {
+        ApiKey: {
+          Title: "ByteDance API Key",
+          SubTitle: "Use a custom ByteDance API Key",
+          Placeholder: "ByteDance API Key",
+        },
+        Endpoint: {
+          Title: "Endpoint Address",
+          SubTitle: "Example: ",
+        },
+      },
+      Alibaba: {
+        ApiKey: {
+          Title: "Alibaba API Key",
+          SubTitle: "Use a custom Alibaba Cloud API Key",
+          Placeholder: "Alibaba Cloud API Key",
+        },
+        Endpoint: {
+          Title: "Endpoint Address",
+          SubTitle: "Example: ",
+        },
+      },
+      Moonshot: {
+        ApiKey: {
+          Title: "Moonshot API Key",
+          SubTitle: "Use a custom Moonshot API Key",
+          Placeholder: "Moonshot API Key",
+        },
+        Endpoint: {
+          Title: "Endpoint Address",
+          SubTitle: "Example: ",
+        },
+      },
+      XAI: {
+        ApiKey: {
+          Title: "XAI API Key",
+          SubTitle: "Use a custom XAI API Key",
+          Placeholder: "XAI API Key",
+        },
+        Endpoint: {
+          Title: "Endpoint Address",
+          SubTitle: "Example: ",
+        },
+      },
+      ChatGLM: {
+        ApiKey: {
+          Title: "ChatGLM API Key",
+          SubTitle: "Use a custom ChatGLM API Key",
+          Placeholder: "ChatGLM API Key",
+        },
+        Endpoint: {
+          Title: "Endpoint Address",
+          SubTitle: "Example: ",
+        },
+      },
+      Stability: {
+        ApiKey: {
+          Title: "Stability API Key",
+          SubTitle: "Use a custom Stability API Key",
+          Placeholder: "Stability API Key",
+        },
+        Endpoint: {
+          Title: "Endpoint Address",
+          SubTitle: "Example: ",
+        },
+      },
+      Iflytek: {
+        ApiKey: {
+          Title: "Iflytek API Key",
+          SubTitle: "Use a Iflytek API Key",
+          Placeholder: "Iflytek API Key",
+        },
+        ApiSecret: {
+          Title: "Iflytek API Secret",
+          SubTitle: "Use a Iflytek API Secret",
+          Placeholder: "Iflytek API Secret",
+        },
+        Endpoint: {
+          Title: "Endpoint Address",
+          SubTitle: "Example: ",
         },
       },
       CustomModel: {
@@ -350,22 +477,30 @@ const en: LocaleType = {
         ApiKey: {
           Title: "API Key",
           SubTitle: "Obtain your API Key from Google AI",
-          Placeholder: "Enter your Google AI Studio API Key",
+          Placeholder: "Google AI API Key",
         },
 
         Endpoint: {
           Title: "Endpoint Address",
-          SubTitle: "Example:",
+          SubTitle: "Example: ",
         },
 
         ApiVersion: {
           Title: "API Version (specific to gemini-pro)",
           SubTitle: "Select a specific API version",
         },
+        GoogleSafetySettings: {
+          Title: "Google Safety Settings",
+          SubTitle: "Select a safety filtering level",
+        },
       },
     },
 
     Model: "Model",
+    CompressModel: {
+      Title: "Summary Model",
+      SubTitle: "Model used to compress history and generate title",
+    },
     Temperature: {
       Title: "Temperature",
       SubTitle: "A larger value makes the more random output",
@@ -520,6 +655,15 @@ const en: LocaleType = {
       HideContext: {
         Title: "Hide Context Prompts",
         SubTitle: "Do not show in-context prompts in chat",
+      },
+      Artifacts: {
+        Title: "Enable Artifacts",
+        SubTitle: "Can render HTML page when enable artifacts.",
+      },
+      CodeFold: {
+        Title: "Enable CodeFold",
+        SubTitle:
+          "Automatically collapse/expand overly long code blocks when CodeFold is enabled",
       },
       Share: {
         Title: "Share This Mask",

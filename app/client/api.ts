@@ -1,15 +1,29 @@
 import { getClientConfig } from "../config/client";
 import {
   ACCESS_CODE_PREFIX,
-  Azure,
   ModelProvider,
   ServiceProvider,
 } from "../constant";
-import { ChatMessage, ModelType, useAccessStore, useChatStore } from "../store";
-import { ChatGPTApi } from "./platforms/openai";
+import {
+  ChatMessageTool,
+  ChatMessage,
+  ModelType,
+  useAccessStore,
+  useChatStore,
+} from "../store";
+import { ChatGPTApi, DalleRequestPayload } from "./platforms/openai";
 import { FileApi, FileInfo } from "./platforms/utils";
 import { GeminiProApi } from "./platforms/google";
 import { ClaudeApi } from "./platforms/anthropic";
+import { ErnieApi } from "./platforms/baidu";
+import { DoubaoApi } from "./platforms/bytedance";
+import { QwenApi } from "./platforms/alibaba";
+import { HunyuanApi } from "./platforms/tencent";
+import { MoonshotApi } from "./platforms/moonshot";
+import { SparkApi } from "./platforms/iflytek";
+import { XAIApi } from "./platforms/xai";
+import { ChatGLMApi } from "./platforms/glm";
+
 export const ROLES = ["system", "user", "assistant"] as const;
 export type MessageRole = (typeof ROLES)[number];
 
@@ -33,11 +47,15 @@ export interface RequestMessage {
 
 export interface LLMConfig {
   model: string;
+  providerName?: string;
   temperature?: number;
   top_p?: number;
   stream?: boolean;
   presence_penalty?: number;
   frequency_penalty?: number;
+  size?: DalleRequestPayload["size"];
+  quality?: DalleRequestPayload["quality"];
+  style?: DalleRequestPayload["style"];
 }
 
 export interface LLMAgentConfig {
@@ -68,11 +86,14 @@ export interface TranscriptionOptions {
 export interface ChatOptions {
   messages: RequestMessage[];
   config: LLMConfig;
+
   onToolUpdate?: (toolName: string, toolInput: string) => void;
   onUpdate?: (message: string, chunk: string) => void;
-  onFinish: (message: string) => void;
+  onFinish: (message: string, responseRes: Response) => void;
   onError?: (err: Error) => void;
   onController?: (controller: AbortController) => void;
+  onBeforeTool?: (tool: ChatMessageTool) => void;
+  onAfterTool?: (tool: ChatMessageTool) => void;
 }
 
 export interface AgentChatOptions {
@@ -85,6 +106,8 @@ export interface AgentChatOptions {
   onFinish: (message: string) => void;
   onError?: (err: Error) => void;
   onController?: (controller: AbortController) => void;
+  onBeforeTool?: (tool: ChatMessageTool) => void;
+  onAfterTool?: (tool: ChatMessageTool) => void;
 }
 
 export interface CreateRAGStoreOptions {
@@ -101,14 +124,17 @@ export interface LLMUsage {
 
 export interface LLMModel {
   name: string;
+  displayName?: string;
   available: boolean;
   provider: LLMModelProvider;
+  sorted: number;
 }
 
 export interface LLMModelProvider {
   id: string;
   providerName: string;
   providerType: string;
+  sorted: number;
 }
 
 export abstract class LLMApi {
@@ -116,7 +142,7 @@ export abstract class LLMApi {
   abstract speech(options: SpeechOptions): Promise<ArrayBuffer>;
   abstract transcription(options: TranscriptionOptions): Promise<string>;
   abstract toolAgentChat(options: AgentChatOptions): Promise<void>;
-  abstract createRAGStore(options: CreateRAGStoreOptions): Promise<void>;
+  abstract createRAGStore(options: CreateRAGStoreOptions): Promise<string>;
   abstract usage(): Promise<LLMUsage>;
   abstract models(): Promise<LLMModel[]>;
 }
@@ -159,6 +185,30 @@ export class ClientApi {
         break;
       case ModelProvider.Claude:
         this.llm = new ClaudeApi();
+        break;
+      case ModelProvider.Ernie:
+        this.llm = new ErnieApi();
+        break;
+      case ModelProvider.Doubao:
+        this.llm = new DoubaoApi();
+        break;
+      case ModelProvider.Qwen:
+        this.llm = new QwenApi();
+        break;
+      case ModelProvider.Hunyuan:
+        this.llm = new HunyuanApi();
+        break;
+      case ModelProvider.Moonshot:
+        this.llm = new MoonshotApi();
+        break;
+      case ModelProvider.Iflytek:
+        this.llm = new SparkApi();
+        break;
+      case ModelProvider.XAI:
+        this.llm = new XAIApi();
+        break;
+      case ModelProvider.ChatGLM:
+        this.llm = new ChatGLMApi();
         break;
       default:
         this.llm = new ChatGPTApi();
@@ -212,43 +262,167 @@ export class ClientApi {
   }
 }
 
-export function getHeaders(ignoreHeaders?: boolean) {
+export function getBearerToken(
+  apiKey: string,
+  noBearer: boolean = false,
+): string {
+  return validString(apiKey)
+    ? `${noBearer ? "" : "Bearer "}${apiKey.trim()}`
+    : "";
+}
+
+export function validString(x: string): boolean {
+  return x?.length > 0;
+}
+
+export function getHeaders(ignoreHeaders: boolean = false) {
   const accessStore = useAccessStore.getState();
+  const chatStore = useChatStore.getState();
   let headers: Record<string, string> = {};
-  const modelConfig = useChatStore.getState().currentSession().mask.modelConfig;
-  const isGoogle = modelConfig.model.startsWith("gemini");
-  if (!ignoreHeaders && !isGoogle) {
+  if (!ignoreHeaders) {
     headers = {
       "Content-Type": "application/json",
-      "x-requested-with": "XMLHttpRequest",
       Accept: "application/json",
     };
   }
-  const isAzure = accessStore.provider === ServiceProvider.Azure;
-  let authHeader = "Authorization";
-  const apiKey = isGoogle
-    ? accessStore.googleApiKey
-    : isAzure
-      ? accessStore.azureApiKey
-      : accessStore.openaiApiKey;
 
-  const makeBearer = (s: string) =>
-    `${isGoogle || isAzure ? "" : "Bearer "}${s.trim()}`;
-  const validString = (x: string) => x && x.length > 0;
+  const clientConfig = getClientConfig();
 
-  // use user's api key first
-  if (validString(apiKey)) {
-    authHeader = isGoogle ? "x-goog-api-key" : authHeader;
-    headers[authHeader] = makeBearer(apiKey);
-    if (isAzure) headers["api-key"] = makeBearer(apiKey);
-  } else if (
-    accessStore.enabledAccessControl() &&
-    validString(accessStore.accessCode)
-  ) {
-    headers[authHeader] = makeBearer(
+  function getConfig() {
+    const modelConfig = chatStore.currentSession().mask.modelConfig;
+    const isGoogle = modelConfig.providerName === ServiceProvider.Google;
+    const isAzure = modelConfig.providerName === ServiceProvider.Azure;
+    const isAnthropic = modelConfig.providerName === ServiceProvider.Anthropic;
+    const isBaidu = modelConfig.providerName == ServiceProvider.Baidu;
+    const isByteDance = modelConfig.providerName === ServiceProvider.ByteDance;
+    const isAlibaba = modelConfig.providerName === ServiceProvider.Alibaba;
+    const isMoonshot = modelConfig.providerName === ServiceProvider.Moonshot;
+    const isIflytek = modelConfig.providerName === ServiceProvider.Iflytek;
+    const isXAI = modelConfig.providerName === ServiceProvider.XAI;
+    const isChatGLM = modelConfig.providerName === ServiceProvider.ChatGLM;
+    const isEnabledAccessControl = accessStore.enabledAccessControl();
+    const apiKey = isGoogle
+      ? accessStore.googleApiKey
+      : isAzure
+        ? accessStore.azureApiKey
+        : isAnthropic
+          ? accessStore.anthropicApiKey
+          : isByteDance
+            ? accessStore.bytedanceApiKey
+            : isAlibaba
+              ? accessStore.alibabaApiKey
+              : isMoonshot
+                ? accessStore.moonshotApiKey
+                : isXAI
+                  ? accessStore.xaiApiKey
+                  : isChatGLM
+                    ? accessStore.chatglmApiKey
+                    : isIflytek
+                      ? accessStore.iflytekApiKey &&
+                        accessStore.iflytekApiSecret
+                        ? accessStore.iflytekApiKey +
+                          ":" +
+                          accessStore.iflytekApiSecret
+                        : ""
+                      : accessStore.openaiApiKey;
+    if (accessStore.isUseOpenAIEndpointForAllModels || ignoreHeaders) {
+      return {
+        isGoogle: false,
+        isAzure: false,
+        isAnthropic: false,
+        isBaidu: false,
+        isByteDance: false,
+        isAlibaba: false,
+        isMoonshot: false,
+        isIflytek: false,
+        isXAI: false,
+        isChatGLM: false,
+        apiKey: accessStore.openaiApiKey,
+        isEnabledAccessControl,
+      };
+    }
+    return {
+      isGoogle,
+      isAzure,
+      isAnthropic,
+      isBaidu,
+      isByteDance,
+      isAlibaba,
+      isMoonshot,
+      isIflytek,
+      isXAI,
+      isChatGLM,
+      apiKey,
+      isEnabledAccessControl,
+    };
+  }
+
+  function getAuthHeader(): string {
+    return isAzure
+      ? "api-key"
+      : isAnthropic
+        ? "x-api-key"
+        : isGoogle
+          ? "x-goog-api-key"
+          : "Authorization";
+  }
+
+  const {
+    isGoogle,
+    isAzure,
+    isAnthropic,
+    isBaidu,
+    apiKey,
+    isEnabledAccessControl,
+  } = getConfig();
+  // when using baidu api in app, not set auth header
+  if (isBaidu && clientConfig?.isApp) return headers;
+
+  const authHeader = getAuthHeader();
+
+  const bearerToken = getBearerToken(
+    apiKey,
+    isAzure || isAnthropic || isGoogle,
+  );
+
+  if (bearerToken) {
+    headers[authHeader] = bearerToken;
+  } else if (isEnabledAccessControl && validString(accessStore.accessCode)) {
+    headers["Authorization"] = getBearerToken(
       ACCESS_CODE_PREFIX + accessStore.accessCode,
     );
   }
 
   return headers;
+}
+
+export function getClientApi(provider: ServiceProvider): ClientApi {
+  const accessStore = useAccessStore.getState();
+  if (accessStore.isUseOpenAIEndpointForAllModels) {
+    return new ClientApi(ModelProvider.GPT);
+  }
+  switch (provider) {
+    case ServiceProvider.Google:
+      return new ClientApi(ModelProvider.GeminiPro);
+    case ServiceProvider.Anthropic:
+      return new ClientApi(ModelProvider.Claude);
+    case ServiceProvider.Baidu:
+      return new ClientApi(ModelProvider.Ernie);
+    case ServiceProvider.ByteDance:
+      return new ClientApi(ModelProvider.Doubao);
+    case ServiceProvider.Alibaba:
+      return new ClientApi(ModelProvider.Qwen);
+    case ServiceProvider.Tencent:
+      return new ClientApi(ModelProvider.Hunyuan);
+    case ServiceProvider.Moonshot:
+      return new ClientApi(ModelProvider.Moonshot);
+    case ServiceProvider.Iflytek:
+      return new ClientApi(ModelProvider.Iflytek);
+    case ServiceProvider.XAI:
+      return new ClientApi(ModelProvider.XAI);
+    case ServiceProvider.ChatGLM:
+      return new ClientApi(ModelProvider.ChatGLM);
+    default:
+      return new ClientApi(ModelProvider.GPT);
+  }
 }

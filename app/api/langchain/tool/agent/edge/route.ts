@@ -3,7 +3,8 @@ import { AgentApi, RequestBody, ResponseBody } from "../agentapi";
 import { auth } from "@/app/api/auth";
 import { EdgeTool } from "../../../../langchain-tools/edge_tools";
 import { ModelProvider } from "@/app/constant";
-import { OpenAI, OpenAIEmbeddings } from "@langchain/openai";
+import { Embeddings } from "@langchain/core/embeddings";
+import { BaseLanguageModel } from "@langchain/core/language_models/base";
 
 async function handle(req: NextRequest) {
   if (req.method === "OPTIONS") {
@@ -27,23 +28,13 @@ async function handle(req: NextRequest) {
     const authToken = req.headers.get("Authorization") ?? "";
     const token = authToken.trim().replaceAll("Bearer ", "").trim();
 
-    const apiKey = await agentApi.getOpenAIApiKey(token);
-    const baseUrl = await agentApi.getOpenAIBaseUrl(reqBody.baseUrl);
+    const apiKey = agentApi.getApiKey(token, reqBody.provider);
+    const baseUrl = agentApi.getBaseUrl(reqBody.baseUrl, reqBody.provider);
 
-    const model = new OpenAI(
-      {
-        temperature: 0,
-        modelName: reqBody.model,
-        openAIApiKey: apiKey,
-      },
-      { basePath: baseUrl },
-    );
-    const embeddings = new OpenAIEmbeddings(
-      {
-        openAIApiKey: apiKey,
-      },
-      { basePath: baseUrl },
-    );
+    let model: BaseLanguageModel;
+    let embeddings: Embeddings | null;
+    model = agentApi.getToolBaseLanguageModel(reqBody, apiKey, baseUrl);
+    embeddings = agentApi.getToolEmbeddings(reqBody, apiKey, baseUrl);
 
     var dalleCallback = async (data: string) => {
       var response = new ResponseBody();
@@ -79,3 +70,22 @@ export const GET = handle;
 export const POST = handle;
 
 export const runtime = "edge";
+export const preferredRegion = [
+  "arn1",
+  "bom1",
+  "cdg1",
+  "cle1",
+  "cpt1",
+  "dub1",
+  "fra1",
+  "gru1",
+  "hnd1",
+  "iad1",
+  "icn1",
+  "kix1",
+  "lhr1",
+  "pdx1",
+  "sfo1",
+  "sin1",
+  "syd1",
+];

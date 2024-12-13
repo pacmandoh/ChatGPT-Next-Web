@@ -26,5 +26,18 @@ declare interface Window {
       isPermissionGranted(): Promise<boolean>;
       sendNotification(options: string | Options): void;
     };
+    updater: {
+      checkUpdate(): Promise<UpdateResult>;
+      installUpdate(): Promise<void>;
+      onUpdaterEvent(
+        handler: (status: UpdateStatusResult) => void,
+      ): Promise<UnlistenFn>;
+    };
+    http: {
+      fetch<T>(
+        url: string,
+        options?: Record<string, unknown>,
+      ): Promise<Response<T>>;
+    };
   };
 }

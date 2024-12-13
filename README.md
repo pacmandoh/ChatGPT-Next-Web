@@ -1,4 +1,5 @@
 <div align="center">
+
 <img src="./docs/images/head-cover.png" alt="icon"/>
 
 <h1 align="center">ChatGPT Next Web LangChain</h1>
@@ -7,7 +8,7 @@
 
 [![Web][Web-image]][web-url]
 
-[网页版](https://n3xt.chat) / [反馈](https://github.com/Hk-Gosuto/ChatGPT-Next-Web-LangChain/issues) / [Discord](https://discord.gg/zTwDFtSC)
+[网页版](https://n3xt.chat) / [反馈](https://github.com/Hk-Gosuto/ChatGPT-Next-Web-LangChain/issues) / [Discord](https://discord.gg/QPrKZFwWn8) / QQ群: `763467624`
 
 [web-url]: https://n3xt.chat/
 [download-url]: https://github.com/Hk-Gosuto/ChatGPT-Next-Web-LangChain/releases
@@ -24,8 +25,12 @@
 
 > [!WARNING]
 > 本项目插件功能基于 [OpenAI API 函数调用](https://platform.openai.com/docs/guides/function-calling) 功能实现，转发 GitHub Copilot 接口或类似实现的模拟接口并不能正常调用插件功能！
+>
+> [实验性] 新增 claude 模型函数调用支持。
+>
+> 由于 Anthropic 不提供嵌入模型，请添加 RAG 功能的 ollama 嵌入模型配置，如不配置，**WebBrowser** 和 **PDFBrowser** 插件将无法使用。
 
-![cover](./docs/images/rag-example.jpg)
+![cover](./docs/images/rag-example-2.jpg)
 
 ![plugin-example](./docs/images/plugin-example.png)
 
@@ -35,8 +40,8 @@
 
 ## 主要功能
 
-- RAG 功能 （预览）
-  - 配置请参考文档[RAG 功能配置说明](./docs/rag-cn.md)
+- RAG 功能
+  - 配置请参考文档 [RAG 功能配置说明](./docs/rag-cn.md)
 
 - 除插件工具外，与原项目保持一致 [ChatGPT-Next-Web 主要功能](https://github.com/Yidadaa/ChatGPT-Next-Web#主要功能)
 
@@ -57,6 +62,7 @@
     - [GoogleCustomSearch](https://api.js.langchain.com/classes/langchain_tools.GoogleCustomSearch.html)
   
       - 环境变量：
+        - `GOOGLE_PLUGIN_API_PROXY_PREFIX` 与 `DDG_API_PROXY_PREFIX` 变量使用方法一致
         - ~~`GOOGLE_API_KEY`~~ `GOOGLE_SEARCH_API_KEY`
         - `GOOGLE_CSE_ID`
       - 申请参考：[说明](https://stackoverflow.com/questions/37083058/programmatically-searching-google-in-python-using-custom-search)
@@ -73,7 +79,9 @@
   
     - ChooseSearchEngine（作者：[hang666](https://github.com/hang666)）
   
-      - 环境变量：`CHOOSE_SEARCH_ENGINE`
+      - 环境变量：
+        - `CHOOSE_SEARCH_ENGINE`
+        - `GOOGLE_PLUGIN_API_PROXY_PREFIX` 与 `DDG_API_PROXY_PREFIX` 变量使用方法一致，只会对 google 进行代理
   
         可选项如下：
   
@@ -85,6 +93,12 @@
       - ⚠ 注意：已知在 vercel 环境下会出现调用不稳定的情况 https://github.com/Hk-Gosuto/ChatGPT-Next-Web-LangChain/issues/89#issuecomment-1868887904
   
     - DuckDuckGo
+
+      - 环境变量：`DDG_API_PROXY_PREFIX`
+
+        配置后将在 DuckDuckGo 插件相关接口前拼接配置内容，如：`DDG_API_PROXY_PREFIX=https://example.com/` 则最终请求为：`https://example.com/https://duckduckgo.com`
+
+        可以结合类似 1234567Yang/cf-proxy-ex 这类代理项目来实现 DuckDuckGo 插件相关接口的代理
   
   - 计算
     - [Calculator](https://api.js.langchain.com/classes/langchain_tools_calculator.Calculator.html)
@@ -238,7 +252,7 @@ OpenAI 接口代理 URL，如果你手动配置了 openai 接口代理，请填�
 
 Google Gemini Pro Api Key.
 
-### ~~ `GOOGLE_BASE_URL` （可选）~~  `GEMINI_BASE_URL` （可选）
+### `GEMINI_BASE_URL` （可选）
 
 Google Gemini Pro Api Url.
 
@@ -284,7 +298,18 @@ anthropic claude Api Url.
 
 如果你想禁用从链接解析预制设置，将此环境变量设置为 1 即可。
 
-### `WHITE_WEBDEV_ENDPOINTS` (optional)
+For Azure: use `modelName@azure=deploymentName` to customize model name and deployment name.
+> Example: `+gpt-3.5-turbo@azure=gpt35` will show option `gpt35(Azure)` in model list.
+> If you only can use Azure model, `-all,+gpt-3.5-turbo@azure=gpt35` will `gpt35(Azure)` the only option in model list.
+
+For ByteDance: use `modelName@bytedance=deploymentName` to customize model name and deployment name.
+> Example: `+Doubao-lite-4k@bytedance=ep-xxxxx-xxx` will show option `Doubao-lite-4k(ByteDance)` in model list.
+
+### `DEFAULT_MODEL` （optional）
+
+Change default model
+
+### `WHITE_WEBDAV_ENDPOINTS` (optional)
 
 如果你想增加允许访问的webdav服务地址，可以使用该选项，格式要求：
 - 每一个地址必须是一个完整的 endpoint
@@ -292,11 +317,18 @@ anthropic claude Api Url.
 - 多个地址以`,`相连
 
 ### `DEFAULT_INPUT_TEMPLATE` （可选）
+
 自定义默认的 template，用于初始化『设置』中的『用户输入预处理』配置项
 
 ### `EDGE_TTS_VOICE_NAME` （可选）
+
 配置 Edge TTS 使用的语音声音，默认为：zh-CN-YunxiNeural
 可访问 https://learn.microsoft.com/zh-cn/azure/ai-services/speech-service/language-support?tabs=tts#supported-languages 查看支持的参数
+
+### `USE_OPENAI_ENDPOINT_FOR_ALL_MODELS` （可选）
+
+配置所有模型都使用 OpenAI 路由，在使用类似 `one-api` 的中转项目时会很有用
+将此环境变量设置为 1 即可
 
 ## 部署
 

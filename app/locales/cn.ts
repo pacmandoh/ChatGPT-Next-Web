@@ -111,6 +111,10 @@ const cn = {
       Toast: "正在生成截图",
       Modal: "长按或右键保存图片",
     },
+    Artifacts: {
+      Title: "分享页面",
+      Error: "分享失败",
+    },
   },
   Select: {
     Search: "搜索消息",
@@ -136,6 +140,7 @@ const cn = {
   Settings: {
     Title: "设置",
     SubTitle: "所有设置选项",
+    ShowPassword: "显示密码",
 
     Danger: {
       Reset: {
@@ -160,6 +165,11 @@ const cn = {
       Title: "字体大小",
       SubTitle: "聊天内容的字体大小",
     },
+    FontFamily: {
+      Title: "聊天字体",
+      SubTitle: "聊天内容的字体，若置空则应用全局默认字体",
+      Placeholder: "字体名称",
+    },
     InjectSystemPrompts: {
       Title: "注入系统级提示信息",
       SubTitle: "强制给每次请求的消息列表开头添加一个模拟 ChatGPT 的系统提示",
@@ -176,6 +186,8 @@ const cn = {
       IsChecking: "正在检查更新...",
       FoundUpdate: (x: string) => `发现新版本：${x}`,
       GoToUpdate: "前往更新",
+      Success: "更新成功！",
+      Failed: "更新失败",
     },
     SendKey: "发送键",
     Theme: "主题",
@@ -342,7 +354,7 @@ const cn = {
         ApiKey: {
           Title: "API 密钥",
           SubTitle: "从 Google AI 获取您的 API 密钥",
-          Placeholder: "输入您的 Google AI Studio API 密钥",
+          Placeholder: "Google AI API KEY",
         },
 
         Endpoint: {
@@ -354,6 +366,124 @@ const cn = {
           Title: "API 版本（仅适用于 gemini-pro）",
           SubTitle: "选择一个特定的 API 版本",
         },
+        GoogleSafetySettings: {
+          Title: "Google 安全过滤级别",
+          SubTitle: "设置内容过滤级别",
+        },
+      },
+      Baidu: {
+        ApiKey: {
+          Title: "API Key",
+          SubTitle: "使用自定义 Baidu API Key",
+          Placeholder: "Baidu API Key",
+        },
+        SecretKey: {
+          Title: "Secret Key",
+          SubTitle: "使用自定义 Baidu Secret Key",
+          Placeholder: "Baidu Secret Key",
+        },
+        Endpoint: {
+          Title: "接口地址",
+          SubTitle: "不支持自定义前往.env配置",
+        },
+      },
+      Tencent: {
+        ApiKey: {
+          Title: "API Key",
+          SubTitle: "使用自定义腾讯云API Key",
+          Placeholder: "Tencent API Key",
+        },
+        SecretKey: {
+          Title: "Secret Key",
+          SubTitle: "使用自定义腾讯云Secret Key",
+          Placeholder: "Tencent Secret Key",
+        },
+        Endpoint: {
+          Title: "接口地址",
+          SubTitle: "不支持自定义前往.env配置",
+        },
+      },
+      ByteDance: {
+        ApiKey: {
+          Title: "接口密钥",
+          SubTitle: "使用自定义 ByteDance API Key",
+          Placeholder: "ByteDance API Key",
+        },
+        Endpoint: {
+          Title: "接口地址",
+          SubTitle: "样例：",
+        },
+      },
+      Alibaba: {
+        ApiKey: {
+          Title: "接口密钥",
+          SubTitle: "使用自定义阿里云API Key",
+          Placeholder: "Alibaba Cloud API Key",
+        },
+        Endpoint: {
+          Title: "接口地址",
+          SubTitle: "样例：",
+        },
+      },
+      Moonshot: {
+        ApiKey: {
+          Title: "接口密钥",
+          SubTitle: "使用自定义月之暗面API Key",
+          Placeholder: "Moonshot API Key",
+        },
+        Endpoint: {
+          Title: "接口地址",
+          SubTitle: "样例：",
+        },
+      },
+      XAI: {
+        ApiKey: {
+          Title: "接口密钥",
+          SubTitle: "使用自定义XAI API Key",
+          Placeholder: "XAI API Key",
+        },
+        Endpoint: {
+          Title: "接口地址",
+          SubTitle: "样例：",
+        },
+      },
+      ChatGLM: {
+        ApiKey: {
+          Title: "接口密钥",
+          SubTitle: "使用自定义 ChatGLM API Key",
+          Placeholder: "ChatGLM API Key",
+        },
+        Endpoint: {
+          Title: "接口地址",
+          SubTitle: "样例：",
+        },
+      },
+      Stability: {
+        ApiKey: {
+          Title: "接口密钥",
+          SubTitle: "使用自定义 Stability API Key",
+          Placeholder: "Stability API Key",
+        },
+        Endpoint: {
+          Title: "接口地址",
+          SubTitle: "样例：",
+        },
+      },
+      Iflytek: {
+        ApiKey: {
+          Title: "ApiKey",
+          SubTitle: "从讯飞星火控制台获取的 APIKey",
+          Placeholder: "APIKey",
+        },
+        ApiSecret: {
+          Title: "ApiSecret",
+          SubTitle: "从讯飞星火控制台获取的 APISecret",
+          Placeholder: "APISecret",
+        },
+        Endpoint: {
+          Title: "接口地址",
+          SubTitle: "样例：",
+        },
       },
       CustomModel: {
         Title: "自定义模型名",
@@ -362,6 +492,10 @@ const cn = {
     },
 
     Model: "模型 (model)",
+    CompressModel: {
+      Title: "对话摘要模型",
+      SubTitle: "用于压缩历史记录、生成对话标题的模型",
+    },
     Temperature: {
       Title: "随机性 (temperature)",
       SubTitle: "值越大，回复越随机",
@@ -512,6 +646,14 @@ const cn = {
       HideContext: {
         Title: "隐藏预设对话",
         SubTitle: "隐藏后预设对话不会出现在聊天界面",
+      },
+      Artifacts: {
+        Title: "启用Artifacts",
+        SubTitle: "启用之后可以直接渲染HTML页面",
+      },
+      CodeFold: {
+        Title: "启用代码折叠",
+        SubTitle: "启用之后可以自动折叠/展开过长的代码块",
       },
       Share: {
         Title: "分享此面具",

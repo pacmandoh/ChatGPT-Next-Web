@@ -1,4 +1,5 @@
 import { LLMModel } from "../client/api";
+import { DalleSize, DalleQuality, DalleStyle } from "../typing";
 import { getClientConfig } from "../config/client";
 import {
   DEFAULT_INPUT_TEMPLATE,
@@ -13,6 +14,7 @@ import {
   DEFAULT_TTS_VOICE,
   DEFAULT_TTS_VOICES,
   StoreKey,
+  ServiceProvider,
 } from "../constant";
 import { createPersistStore } from "../utils/store";
 
@@ -45,11 +47,16 @@ export const DEFAULT_CONFIG = {
   submitKey: SubmitKey.Enter,
   avatar: "1f603",
   fontSize: 14,
+  fontFamily: "",
   theme: Theme.Auto as Theme,
   tightBorder: !!config?.isApp,
   sendPreviewBubble: true,
   enableAutoGenerateTitle: true,
   sidebarWidth: DEFAULT_SIDEBAR_WIDTH,
+
+  enableArtifacts: true, // show artifacts config
+
+  enableCodeFold: true, // code fold config
 
   disablePromptHint: false,
 
@@ -60,7 +67,8 @@ export const DEFAULT_CONFIG = {
   models: DEFAULT_MODELS as any as LLMModel[],
 
   modelConfig: {
-    model: "gpt-3.5-turbo" as ModelType,
+    model: "gpt-4o-mini" as ModelType,
+    providerName: "OpenAI" as ServiceProvider,
     temperature: 0.5,
     top_p: 1,
     max_tokens: 4000,
@@ -69,8 +77,13 @@ export const DEFAULT_CONFIG = {
     sendMemory: true,
     historyMessageCount: 4,
     compressMessageLengthThreshold: 1000,
+    compressModel: "",
+    compressProviderName: "",
     enableInjectSystemPrompts: true,
     template: config?.template ?? DEFAULT_INPUT_TEMPLATE,
+    size: "1024x1024" as DalleSize,
+    quality: "standard" as DalleQuality,
+    style: "vivid" as DalleStyle,
   },
 
   pluginConfig: {
@@ -173,12 +186,12 @@ export const useAppConfig = createPersistStore(
 
       for (const model of oldModels) {
         model.available = false;
-        modelMap[model.name] = model;
+        modelMap[`${model.name}@${model?.provider?.id}`] = model;
       }
 
       for (const model of newModels) {
         model.available = true;
-        modelMap[model.name] = model;
+        modelMap[`${model.name}@${model?.provider?.id}`] = model;
       }
 
       set(() => ({
@@ -225,7 +238,7 @@ export const useAppConfig = createPersistStore(
         state.modelConfig.template =
           state.modelConfig.template !== DEFAULT_INPUT_TEMPLATE
             ? state.modelConfig.template
-            : config?.template ?? DEFAULT_INPUT_TEMPLATE;
+            : (config?.template ?? DEFAULT_INPUT_TEMPLATE);
       }
 
       return state as any;
