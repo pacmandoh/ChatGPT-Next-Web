@@ -199,7 +199,7 @@ export function SideBar(props: { className?: string }) {
         </div>
         <div className={styles["sidebar-logo"] + " no-dark"}>
           <a
-            href="https://crybabyaq.love/"
+            href="https://pacdocs.cn/"
             target="_blank"
             rel="noopener noreferrer"
           >
